@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div id="layout" class="pure-g">
+    <div class="yoyoyo">
+        <div class="header">
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                            {% if user.is_authenticated %}
+                                <a class="button-success pure-button" href="/index/">{{ user.username }}</a>
+                                <a class="button-success pure-button" href="/logout/">退出</a>
+                            {% else %}
+                                <a class="button-success pure-button" href="/regist/">注册</a>
+                                <a class="button-success pure-button" href="/login1/">登录</a>
+                            {% endif %}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

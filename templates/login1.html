@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+{% block content %}
+
+ <div id="layout" class="pure-g">
+    <div class="yoyoyo">
+        <div class="header">
+            <form action="/login1/" method="POST">
+            <h2>登录 </h2>
+            <label for="id_username">用户名：</label>
+            <input type="text" name="username" />
+            <br>
+            <label for="id_username">密码：</label>
+            <input type="password" name="password" />
+            <br>
+            <button type="submit">登陆 </button>
+            <a class="tiaozhuan" href="/login/">人脸登陆</a>
+            <p >{{ login_error }}</p>
+        </form>
+        </div>
+    </div>
+ </div>
+{% endblock %}

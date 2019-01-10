@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/img/basic/favicon.ico" type="image/x-icon">
+    <title>Paper</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+    <style>
+        .loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F5F8FA;
+            z-index: 9998;
+            text-align: center;
+        }
+
+        .plane-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+    </style>
+</head>
+<body class="light">
+        <div class="col-md-9  height-full blue accent-3 align-self-center text-center" data-bg-repeat="false"
+             data-bg-possition="center"
+             style="background: #FFFFFF">
+            <video  id="video" autoplay style="width: 50%;height: 50%"></video>
+            <canvas id="canvas" width="480" height="320" autoplay style="width: 0%;height: 0%"></canvas>
+</div>
+</div>
+<script src="/static/js/app.js"></script>
+<script>
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    function getUserMediaToPhoto(constraints,success,error) {
+        if(navigator.mediaDevices.getUserMedia){
+            navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+        }else if (navigator.webkitGetUserMedia) {
+            navigator.webkitGetUserMedia(constraints,success,error);
+        }else if(navigator.mozGetUserMedia){
+            navigator.mozGetUserMedia(constraints,success,error);
+        }else if(navigator.getUserMedia){
+            navigator.getUserMedia(constraints,success,error);
+        }
+    }
+    function success(stream){
+        var CompatibleURL = window.URL || window.webkitURL;
+        video.src = CompatibleURL.createObjectURL(stream);
+        video.play();//播放视频
+        postFace()
+    }
+    function error(error) {
+        console.log('访问用户媒体失败：',error.name,error.message);
+    }
+    function postFace() {
+        setTimeout(function () {
+            context.drawImage(video,0,0,480,320);
+            img=canvas.toDataURL('image/jpg')
+            {#获取完整的base64编码#}
+            img=img.split(',')[1]
+            //将照片以base64用ajax传到后台
+            $.post({
+                url:'/getface',
+                data:{
+                    message:img
+                },
+                success:function (callback) {
+                    if(callback=='no'){
+                        postFace()
+                    }else {
+                        window.location.href=callback
+                    }
+                },
+                error:function (callback) {
+                    postFace()
+                }
+            })
+        },300)
+    }
+    if(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia){
+        getUserMediaToPhoto({video:{width:480,height:320}},success,error);
+    }else{
+        alert('你的浏览器不支持访问用户媒体设备');
+    }
+</script>
+</body>
+</html>
+
